@@ -14,7 +14,7 @@ func main () {
 	var current = 50
 	var countOfZeroes = 0
 
-	fi, _ := os.Open("./input.txt")
+	fi, _ := os.Open("./inputTbox.txt")
 
 	scanner := bufio.NewScanner(fi)
 
