@@ -72,7 +72,7 @@ func getIndicesToCheck(currLineIndex int, currentCharIndex int, lengthOfLine int
 }
 
 func main() {
-	fi, _ := os.Open("inputTest.txt")
+	fi, _ := os.Open("inputTbox.txt")
 	scanner := bufio.NewScanner(fi)
 
 	lines := []string{}
@@ -83,6 +83,10 @@ func main() {
 		lines = append(lines, scanner.Text())
 	}
 
+	goAgain := true
+
+	for goAgain {
+  	numLinesChanged := 0
 
 	for i := 0; i < len(lines); i++ {
 		prevLine := "" 
@@ -140,11 +144,21 @@ func main() {
 			if numNearbyRolls < 4 {
 				totalRolls++
 				updatedLine += string("x")
+			} else {
+				updatedLine += string(currLine[j])
+			}
+		}
+
+			if lines[i] != updatedLine {
+				lines[i] = updatedLine
+				numLinesChanged++
 			} 
 		}
 
+		if numLinesChanged == 0 {
+			goAgain = false
+		}		
 	}
-	
 	println("Total valid rolls: ", totalRolls)
 }
 
