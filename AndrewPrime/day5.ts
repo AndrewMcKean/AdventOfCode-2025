@@ -1,45 +1,36 @@
-const test = ["3-5", "10-14", "16-20", "12-18"];
-const listOfRanges: { start: number; end: number }[] = [];
+const lines = ["3-5", "10-14", "12-18", "16-20"];
 
-let totalUniqueIDs = 0;
+let validRanges = [];
+let numValidIDs = 0;
 
-for (const range of test) {
-  const [start, end] = range.split("-");
-  const numStart = Number(start);
-  const numEnd = Number(end);
-  listOfRanges.push({ start: numStart, end: numEnd });
-}
+const generateRanges = () => {
+  let ranges = [];
+  for (const line of lines) {
+    const [start, end] = line.split("-");
+    ranges.push({ start: Number(start), end: Number(end) });
+  }
 
-// remove subsets
-for (const rangeEntry of listOfRanges) {
-  for (const [index, sussEntry] of listOfRanges.entries()) {
-    if (
-      rangeEntry.start <= sussEntry.start &&
-      rangeEntry.end >= sussEntry.end
-    ) {
-      listOfRanges.splice(index, 1);
-    }
+  ranges.sort((a, b) => a.start - b.start);
+  return ranges;
+};
+
+const ranges = generateRanges();
+let current = ranges[0];
+
+// I cheated here by looking up how to merge arrays as I couldnt get it right for the larger input
+for (let i = 1; i < ranges.length; i++) {
+  const nextRange = ranges[i];
+  if (nextRange.start <= current.end + 1) {
+    current.end = Math.max(current.end, nextRange.end);
+  } else {
+    validRanges.push(current);
+    current = nextRange;
   }
 }
 
-// amend ovelaps
-for (const [index, rangeEntry] of listOfRanges.entries()) {
-  for (const sussEntry of listOfRanges) {
-    if (
-      rangeEntry.start <= sussEntry.start &&
-      rangeEntry.end <= sussEntry.end
-    ) {
-      listOfRanges[index] = { start: rangeEntry.start, end: sussEntry.end };
-    }
-
-    if (rangeEntry.end > sussEntry.end && rangeEntry.start >= sussEntry.start) {
-      listOfRanges[index] = { start: sussEntry.end, end: rangeEntry.end };
-    }
-  }
+validRanges.push(current);
+for (const r of validRanges) {
+  numValidIDs += r.end - r.start + 1;
 }
 
-for (const val of listOfRanges) {
-  totalUniqueIDs += val.end + 1 - val.start;
-}
-
-console.log(listOfRanges);
+console.log(numValidIDs);
